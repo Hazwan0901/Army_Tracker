@@ -47,12 +47,12 @@ void loop()
     Serial.println(" ms");
     delay(_delay);
 
-    LoRa.print("P1:");
+    LoRa.print("P2:");
     LoRa.print(counter);
     if (LoRa.endPacket() == 1)
     {
       // success
-      Serial.print("P1:");
+      Serial.print("P2:");
       Serial.print(counter);
       Serial.println("");
 
