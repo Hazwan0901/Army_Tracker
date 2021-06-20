@@ -2,6 +2,9 @@
 
 int pot = A1;
 
+int dutyCycleLow = 2500;
+int dutyCycleHigh = 3500;
+
 int counter = 1;
 
 int SyncWord = 0x21;
@@ -56,13 +59,13 @@ void loop()
     {
       Serial.print("Failed: wait for : ");
     }
-    int _delay = random(1000, 2000);
-    delay(random(1000, 2000));
+    int _delay = random(dutyCycleLow, dutyCycleHigh);
     Serial.print(_delay);
     Serial.print(" ms");
+    delay(_delay);
     return;
   }
-  int _delay = random(1000, 2000);
+  int _delay = random(dutyCycleLow, dutyCycleHigh);
   Serial.print("Failed: wait for : ");
   Serial.print(_delay);
   Serial.print(" ms");

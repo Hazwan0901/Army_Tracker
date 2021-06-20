@@ -6,6 +6,9 @@ int potVal;
 
 int SyncWord = 0x22;
 
+int dutyCycleLow = 1000;
+int dutyCycleHigh = 2000;
+
 void setup()
 {
   Serial.begin(9600);
@@ -50,13 +53,13 @@ void loop()
     {
       Serial.print("Failed: wait for : ");
     }
-    int _delay = random(1000, 2000);
-    delay(random(1000, 2000));
+    int _delay = random(dutyCycleLow, dutyCycleHigh);
+    delay(_delay);
     Serial.print(_delay);
     Serial.print(" ms");
     return;
   }
-  int _delay = random(1000, 2000);
+  int _delay = random(dutyCycleLow, dutyCycleHigh);
   Serial.print("Failed: wait for : ");
   Serial.print(_delay);
   Serial.print(" ms");
