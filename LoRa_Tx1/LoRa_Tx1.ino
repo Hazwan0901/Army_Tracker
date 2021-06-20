@@ -9,13 +9,13 @@ int SyncWord = 0x22;
 int dutyDuration = 10000;
 
 //dummy data:
-uint8_t address = 1;      // 1 byte
-double heartRate = 80.78; // 4 bytes
-double bodyTemp = 36.5;   // 4 bytes
-uint8_t emergency = 1;    // 1 byte
-double lat = 1.567478;    // 4 bytes
-double lng = 103.602458;  // 4 bytes
-uint8_t checksum = 0;     // 1 bytes
+uint8_t address = 1;     // 1 byte
+float heartRate = 80.78; // 4 bytes
+float bodyTemp = 36.5;   // 4 bytes
+uint8_t emergency = 1;   // 1 byte
+float lat = 1.567478;    // 4 bytes
+float lng = 103.602458;  // 4 bytes
+uint8_t checksum = 0;    // 1 bytes
 
 // total bytes = 19 bytes
 uint8_t buffer[19];

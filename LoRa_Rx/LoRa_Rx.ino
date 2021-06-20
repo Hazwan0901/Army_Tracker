@@ -93,13 +93,13 @@ void loop()
 
     uint8_t address = rxBuffer[0];
 
-    double heartRate;
+    float heartRate;
     ((byte *)&heartRate)[0] = rxBuffer[1];
     ((byte *)&heartRate)[1] = rxBuffer[2];
     ((byte *)&heartRate)[2] = rxBuffer[3];
     ((byte *)&heartRate)[3] = rxBuffer[4];
 
-    double bodyTemp;
+    float bodyTemp;
     ((byte *)&bodyTemp)[0] = rxBuffer[5];
     ((byte *)&bodyTemp)[1] = rxBuffer[6];
     ((byte *)&bodyTemp)[2] = rxBuffer[7];
@@ -107,13 +107,13 @@ void loop()
 
     uint8_t emergency = rxBuffer[9];
 
-    double lat;
+    float lat;
     ((byte *)&lat)[0] = rxBuffer[10];
     ((byte *)&lat)[1] = rxBuffer[11];
     ((byte *)&lat)[2] = rxBuffer[12];
     ((byte *)&lat)[3] = rxBuffer[13];
 
-    double lng;
+    float lng;
     ((byte *)&lng)[0] = rxBuffer[14];
     ((byte *)&lng)[1] = rxBuffer[15];
     ((byte *)&lng)[2] = rxBuffer[16];
