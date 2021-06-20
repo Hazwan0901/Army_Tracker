@@ -49,7 +49,7 @@ void loop()
     // read packet
     while (LoRa.available())
     {
-      rxByte = LoRa.read();
+      byte rxByte = LoRa.read();
       if (rxByte < 0)
       {
         continue;
@@ -113,3 +113,4 @@ void loop()
       }
     }
   }
+}

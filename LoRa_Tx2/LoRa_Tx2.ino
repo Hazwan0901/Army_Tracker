@@ -1,6 +1,6 @@
 #include <LoRa.h>
 
-int pot = A1;
+//int pot = A1;
 
 int potVal;
 
@@ -23,7 +23,7 @@ uint8_t buffer[19];
 void setup()
 {
   Serial.begin(9600);
-  pinMode(pot, INPUT);
+  //pinMode(pot, INPUT);
   while (!Serial)
     ;
   // Serial.println("LoRa Sender");
@@ -49,7 +49,7 @@ void loop()
     // read packet
     while (LoRa.available())
     {
-      rxByte = LoRa.read();
+      byte rxByte = LoRa.read();
       if (rxByte < 0)
       {
         continue;
@@ -113,3 +113,4 @@ void loop()
       }
     }
   }
+}

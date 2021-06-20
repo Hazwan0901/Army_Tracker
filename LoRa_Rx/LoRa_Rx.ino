@@ -68,11 +68,11 @@ void loop()
       }
       if (POLL_NODE[0] == 1)
       {
-        POLL_NODE[0] == 0
+        POLL_NODE[0] == 2;
       }
       else
       {
-        POLL_NODE[0] == 1
+        POLL_NODE[0] == 1;
       }
       TX_MODE = 0;
       return;
