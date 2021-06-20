@@ -60,7 +60,8 @@ void loop()
     delay(2000);
     if (LoRa.beginPacket() == 1)
     {
-      uint8_t buff[1] = {POLL_NODE + 1} LoRa.write(POLL_NODE, 1);
+      uint8_t buff[1] = {POLL_NODE + 1};
+      LoRa.write(POLL_NODE, 1);
       if (LoRa.endPacket() == 1)
       {
         Serial.print("Get data from node  :");
