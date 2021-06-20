@@ -20,7 +20,7 @@ String full_string;
 String inString = "";
 int rssi;
 int SyncWord = 0x22;
-int inChar;
+int rxByte;
 
 bool i = 0;
 int priviousValue1 = 0,
@@ -30,6 +30,8 @@ int liveValue1 = 0,
 
 int Data1 = 0,
     Sensor_Data1 = 0;
+
+uint8_t rxBuffer[19];
 
 void setup()
 {
@@ -61,35 +63,101 @@ void loop()
   if (packetSize)
   {
     // read packet
+    int rxCount = 0;
+    long verifyChecksum = 0;
+    
     while (LoRa.available())
     {
-      inChar = LoRa.read();
-      inString += (char)inChar;
-      val = inString.toInt();
+      rxByte = LoRa.read();
+      if(rxByte <-1){
+        return;
+      }
+      verifyChecksum += rxByte; 
+      rxBuffer[rxCount++] = rxByte;
+    }
+    if(rxCount == 19){
+      Serial.println("Complete packet received");
+    }
+    uint8_t chksum = (uint8_t)(verifyChecksum);
+    if(chksum == 0xFF){
+      Serial.println("Packet OK!");
+    }else{
+      Serial.println("Packet Corrupted!");
     }
 
-    Serial.print("Val: ");
-    Serial.println(val);
-    Serial.print("inChar: ");
-    Serial.println(inChar);
-    Serial.print("inString: ");
-    Serial.println(inString);
-    Serial.print("packetSize: ");
-    Serial.println(packetSize);
+    uint8_t address = rxBuffer[0];    
+    
+    double heartRate; 
+    ((byte *)&heartRate)[0] = rxBuffer[1];
+    ((byte *)&heartRate)[1] = rxBuffer[2];
+    ((byte *)&heartRate)[2] = rxBuffer[3];
+    ((byte *)&heartRate)[3] = rxBuffer[4];
+    
+    double bodyTemp;
+    ((byte *)&bodyTemp)[0] = rxBuffer[5];
+    ((byte *)&bodyTemp)[1] = rxBuffer[6];
+    ((byte *)&bodyTemp)[2] = rxBuffer[7];
+    ((byte *)&bodyTemp)[3] = rxBuffer[8];
+       
+    uint8_t emergency = rxBuffer[9];
+       
+    double lat;  
+    ((byte *)&lat)[0] = rxBuffer[10];  
+    ((byte *)&lat)[1] = rxBuffer[11]; 
+    ((byte *)&lat)[2] = rxBuffer[12]; 
+    ((byte *)&lat)[3] = rxBuffer[13]; 
+    
+    double lng; 
+    ((byte *)&lng)[0] = rxBuffer[14];  
+    ((byte *)&lng)[1] = rxBuffer[15]; 
+    ((byte *)&lng)[2] = rxBuffer[16]; 
+    ((byte *)&lng)[3] = rxBuffer[17];
+    
+    uint8_t checksum = rxBuffer[18];    
+
+    Serial.print("From node : ");
+    Serial.println(address);
+
+    Serial.print("Heart Rate : ");
+    Serial.println(heartRate);
+
+    Serial.print("Body Temperature : ");
+    Serial.println(bodyTemp);
+
+    Serial.print("Emergency : ");
+    Serial.println(emergency);
+
+    Serial.print("Latitude : ");
+    Serial.println(lat);
+
+    Serial.print("Longitude : ");
+    Serial.println(lng);
+
+    Serial.print("Checksum : ");
+    Serial.println(checksum);
+    
+//    Serial.print("Val: ");
+//    Serial.println(val);
+//    Serial.print("inChar: ");
+//    Serial.println(inChar);
+//    Serial.print("inString: ");
+//    Serial.println(inString);
+//    Serial.print("packetSize: ");
+//    Serial.println(packetSize);
 
     rssi = LoRa.packetRssi();
 
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(WHITE);
-    display.setCursor(0, 0);
-    display.print(inString);
+//    display.setCursor(0, 0);
+//    display.print(inString);
     display.setCursor(0, 8);
     display.print("RSSI: ");
     display.println(rssi);
-    display.setCursor(0, 16);
-    display.print(val);
+//    display.setCursor(0, 16);
+//    display.print(val);
     display.display();
-    inString = "";
+//    inString = "";
   }
 }
