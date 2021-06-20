@@ -27,6 +27,7 @@ void setup()
   LoRa.setSignalBandwidth(62.5E3); // for -139dB (page - 112)
   LoRa.setCodingRate4(8);          // for -139dB (page - 112)
   LoRa.setSyncWord(SyncWord);
+  delay(random(5000));
 }
 
 void loop()
@@ -60,7 +61,7 @@ void loop()
       Serial.print("Failed: wait for : ");
     }
     Serial.print(5000 - _delay);
-    Serial.print(" ms");
+    Serial.println(" ms");
     delay(5000 - _delay);
 
     return;
