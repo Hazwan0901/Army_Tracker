@@ -44,9 +44,21 @@ void loop()
       Serial.print("P1:");
       Serial.print(potVal);
       Serial.println("");
-      delay(random(1000, 2000));
-      return;
+      Serial.print("Success: wait for : ");
     }
+    else
+    {
+      Serial.print("Failed: wait for : ");
+    }
+    int _delay = random(1000, 2000);
+    delay(random(1000, 2000));
+    Serial.print(_delay);
+    Serial.print(" ms");
+    return;
   }
-  delay(random(1000, 2000));
+  int _delay = random(1000, 2000);
+  Serial.print("Failed: wait for : ");
+  Serial.print(_delay);
+  Serial.print(" ms");
+  delay(_delay);
 }
