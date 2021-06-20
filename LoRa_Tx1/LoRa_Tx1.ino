@@ -67,8 +67,6 @@ void loop()
   buffer[16] = ((byte *)&lng)[2];
   buffer[17] = ((byte *)&lng)[3];
 
-  Serial.write(buffer, 19);
-
   checksum = 0;
   for (int i = 0; i < 18; i++)
   {
@@ -76,6 +74,8 @@ void loop()
   }
   checksum = 0xFF - checksum;
   buffer[18] = checksum;
+
+  Serial.write(buffer, 19);
 
   // Serial.println("Sending packet: ");
   // send packet

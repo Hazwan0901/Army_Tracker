@@ -16,20 +16,11 @@ int val = 0;
 int nss = 4;
 int RESET = 15;
 int dio0 = 2;
-String full_string;
-String inString = "";
-int rssi;
+
 int SyncWord = 0x22;
+
+int rssi;
 int rxByte;
-
-bool i = 0;
-int priviousValue1 = 0,
-    priviousValue2 = 0;
-int liveValue1 = 0,
-    liveValue2 = 0;
-
-int Data1 = 0,
-    Sensor_Data1 = 0;
 
 uint8_t rxBuffer[19];
 
@@ -53,7 +44,7 @@ void setup()
   LoRa.setSignalBandwidth(62.5E3); // for -139dB (page - 112)
   LoRa.setCodingRate4(8);          // for -139dB (page - 112)
   LoRa.setSyncWord(SyncWord);      // ranges from 0-0xFF, default 0x12, see API docs
-  LoRa.setGain(6);
+  // LoRa.setGain(6);
 }
 
 void loop()
@@ -69,9 +60,9 @@ void loop()
     while (LoRa.available())
     {
       rxByte = LoRa.read();
-      if (rxByte < -1)
+      if (rxByte < 0)
       {
-        return;
+        continue;
       }
       verifyChecksum += rxByte;
       rxBuffer[rxCount++] = rxByte;
