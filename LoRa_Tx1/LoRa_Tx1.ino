@@ -18,7 +18,7 @@ double lng = 103.602458;  // 4 bytes
 uint8_t checksum = 0;     // 1 bytes
 
 // total bytes = 19 bytes
-uint8_t buffer = [19];
+uint8_t buffer[19];
 
 void setup()
 {
@@ -43,29 +43,29 @@ void setup()
 void loop()
 {
 
-  bufffer[0] = address;
-  buffer[1] = (uint8_t)(heartRate >> 24);
-  buffer[2] = (uint8_t)(heartRate >> 16);
-  buffer[3] = (uint8_t)(heartRate >> 8);
-  buffer[4] = (uint8_t)(heartRate);
-  buffer[5] = (uint8_t)(bodyTemp >> 24);
-  buffer[6] = (uint8_t)(bodyTemp >> 16);
-  buffer[7] = (uint8_t)(bodyTemp >> 8);
-  buffer[8] = (uint8_t)(bodyTemp);
+  buffer[0] = address;
+  buffer[1] = ((byte *)&heartRate)[0];
+  buffer[2] = ((byte *)&heartRate)[1];
+  buffer[3] = ((byte *)&heartRate)[2];
+  buffer[4] = ((byte *)&heartRate)[3];
+  buffer[5] = ((byte *)&bodyTemp)[0];
+  buffer[6] = ((byte *)&bodyTemp)[1];
+  buffer[7] = ((byte *)&bodyTemp)[2];
+  buffer[8] = ((byte *)&bodyTemp)[3];
   buffer[9] = emergency;
-  buffer[10] = (uint8_t)(lat >> 24);
-  buffer[11] = (uint8_t)(lat >> 16);
-  buffer[12] = (uint8_t)(lat >> 8);
-  buffer[13] = (uint8_t)(lat);
-  buffer[14] = (uint8_t)(lng >> 24);
-  buffer[15] = (uint8_t)(lng >> 16);
-  buffer[16] = (uint8_t)(lng >> 8);
-  buffer[17] = (uint8_t)(lng);
+  buffer[10] = ((byte *)&lat)[0];
+  buffer[11] = ((byte *)&lat)[1];
+  buffer[12] = ((byte *)&lat)[2];
+  buffer[13] = ((byte *)&lat)[3];
+  buffer[14] = ((byte *)&lng)[0];
+  buffer[15] = ((byte *)&lng)[1];
+  buffer[16] = ((byte *)&lng)[2];
+  buffer[17] = ((byte *)&lng)[3];
 
   checksum = 0;
   for (int i = 0; i < 18; i++)
   {
-    checksum = (uint8_t)(checksum + bufffer[i]);
+    checksum = (uint8_t)(checksum + buffer[i]);
   }
   checksum = 0xFF - checksum;
   buffer[18] = checksum;
