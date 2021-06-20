@@ -33,10 +33,11 @@ long timeout = 1000000;
 //======================= Delay Without Delay ===============
 unsigned long previousMillis = 0,
               currentMillis = 0;  
-const long interval = 1000; 
+const long interval = 5000; 
 
 int delay_Count = 0;
 int enable_Request = 0;
+int request_Flag = 0;
 //======================== Data From Transmitter ===============
 uint8_t address;
 float bodyTemp;
@@ -88,7 +89,37 @@ void loop()
 //======================== Request Data From Transmitter ===============
 void Request_Data()
 {
-  //Request Data from Transmitter
+  //Request Data from Transmitter with interval
+  currentMillis = millis();
+
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    if (TX_MODE == 1 )
+    {
+      if (LoRa.beginPacket() == 1)
+      {
+        uint8_t buff[1] = {1};
+        LoRa.write(buff, 1);
+        if (LoRa.endPacket() == 1)
+        {
+          Serial.print("Get data from node : 1");
+        }
+      }
+      TX_MODE = 0;
+    }else{
+      if (LoRa.beginPacket() == 1)
+      {
+        uint8_t buff[1] = {2};
+        LoRa.write(buff, 1);
+        if (LoRa.endPacket() == 1)
+        {
+          Serial.print("Get data from node : 2");
+        }
+      }
+      TX_MODE = 1;
+    }
+  }
+  /*
   if (TX_MODE == 1 )
   {
     
@@ -113,7 +144,7 @@ void Request_Data()
     timeout = 1000000;
     TX_MODE = 1;
   }
-
+*/
 }
 //======================== Extract Data From Transmitter ===============
 void Extract_Data(){
@@ -121,7 +152,7 @@ void Extract_Data(){
   int packetSize = LoRa.parsePacket();
   if (packetSize)
   {
-    TX_MODE = 1;
+    //TX_MODE = 1;
     // read packet
     int rxCount = 0;
     long verifyChecksum = 0;
