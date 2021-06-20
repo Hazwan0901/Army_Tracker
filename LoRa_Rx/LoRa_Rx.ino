@@ -24,7 +24,7 @@ int rxByte;
 
 uint8_t rxBuffer[19];
 
-uint8_t POLL_NODE[] = {1};
+uint8_t POLL_NODE = 0;
 uint8_t TX_MODE = 1;
 
 long timeout = 100000;
@@ -60,19 +60,12 @@ void loop()
     delay(2000);
     if (LoRa.beginPacket() == 1)
     {
-
-      LoRa.write(POLL_NODE, 1);
+      uint8_t buff[1] = {POLL_NODE + 1} LoRa.write(POLL_NODE, 1);
       if (LoRa.endPacket() == 1)
       {
-        Serial.print("Polling for node 1");
-      }
-      if (POLL_NODE[0] == 1)
-      {
-        POLL_NODE[0] == 2;
-      }
-      else
-      {
-        POLL_NODE[0] == 1;
+        Serial.print("Get data from node  :");
+        Serial.println(POLL_NODE + 1);
+        POLL_NODE = (POLL_NODE + 1) % 2;
       }
       TX_MODE = 0;
       return;
