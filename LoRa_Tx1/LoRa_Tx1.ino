@@ -44,7 +44,7 @@ void loop()
       Serial.print("P1:");
       Serial.print(potVal);
       Serial.println("");
-      delay(1000);
+      delay(random(1000, 2000));
       return;
     }
   }

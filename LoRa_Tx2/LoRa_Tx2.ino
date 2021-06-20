@@ -51,7 +51,7 @@ void loop()
         counter = 1;
       }
     }
-    delay(1000);
+    delay(random(1000, 2000));
     return;
   }
   delay(random(1000, 2000));
