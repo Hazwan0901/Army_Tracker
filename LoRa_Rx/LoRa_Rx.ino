@@ -24,6 +24,11 @@ int rxByte;
 
 uint8_t rxBuffer[19];
 
+uint8_t POLL_NODE[] = {1};
+uint8_t TX_MODE = 1;
+
+long timeout = 100000;
+
 void setup()
 {
   LoRa.setPins(nss, RESET, dio0);
@@ -49,10 +54,43 @@ void setup()
 
 void loop()
 {
+
+  if (TX_MODE == 1)
+  {
+    delay(2000);
+    if (LoRa.beginPacket() == 1)
+    {
+
+      LoRa.write(POLL_NODE, 1);
+      if (LoRa.endPacket() == 1)
+      {
+        Serial.print("Polling for node 1");
+      }
+      if (POLL_NODE[0] == 1)
+      {
+        POLL_NODE[0] == 0
+      }
+      else
+      {
+        POLL_NODE[0] == 1
+      }
+      TX_MODE = 0;
+      return;
+    }
+  }
+
+  timeout -= 1;
+  if (timeout == 0)
+  {
+    timeout = 100000;
+    TX_MODE = 1;
+  }
+
   // try to parse packet
   int packetSize = LoRa.parsePacket();
   if (packetSize)
   {
+    TX_MODE = 1;
     // read packet
     int rxCount = 0;
     long verifyChecksum = 0;
@@ -125,10 +163,10 @@ void loop()
     Serial.println(emergency);
 
     Serial.print("Latitude : ");
-    Serial.println(lat,6);
+    Serial.println(lat, 6);
 
     Serial.print("Longitude : ");
-    Serial.println(lng,6);
+    Serial.println(lng, 6);
 
     Serial.print("Checksum : ");
     Serial.println(checksum);
