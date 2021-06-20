@@ -6,8 +6,6 @@ int potVal;
 
 int SyncWord = 0x22;
 
-int dutyCycleLow = 1000;
-int dutyCycleHigh = 2000;
 int dutyDuration = 10000;
 
 void setup()
@@ -28,7 +26,6 @@ void setup()
   LoRa.setSignalBandwidth(62.5E3); // for -139dB (page - 112)
   LoRa.setCodingRate4(8);          // for -139dB (page - 112)
   LoRa.setSyncWord(SyncWord);
-  delay(random(0, dutyDuration / 2));
 }
 
 void loop()
@@ -36,12 +33,11 @@ void loop()
 
   potVal = map(analogRead(pot), 0, 1024, 0, 255);
   Serial.println("Sending packet: ");
-
   // send packet
   if (LoRa.beginPacket() == 1)
   {
     // random backoff
-    int _delay = random(dutyCycleLow, dutyCycleHigh);
+    int _delay = random(0, dutyDuration / 2);
     Serial.print("Backoff for : ");
     Serial.print(_delay);
     Serial.println(" ms");
@@ -53,16 +49,8 @@ void loop()
     {
       //success
       Serial.print("P1:");
-      Serial.print(potVal);
-      Serial.println("");
-      Serial.print("Success: wait for : ");
+      Serial.println(potVal);
     }
-    else
-    {
-      Serial.print("Failed: wait for : ");
-    }
-    Serial.print(dutyDuration - _delay);
-    Serial.println(" ms");
     delay(dutyDuration - _delay);
 
     return;
