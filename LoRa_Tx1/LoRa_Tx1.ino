@@ -38,7 +38,13 @@ void loop()
   // send packet
   if (LoRa.beginPacket() == 1)
   {
-    // ready to transmit
+    // random backoff
+    int _delay = random(dutyCycleLow, dutyCycleHigh);
+    Serial.print("Backoff for : ");
+    Serial.print(_delay);
+    Serial.println(" ms");
+    delay(_delay);
+
     LoRa.print("P1:");
     LoRa.print(potVal);
     if (LoRa.endPacket() == 1)
@@ -53,15 +59,10 @@ void loop()
     {
       Serial.print("Failed: wait for : ");
     }
-    int _delay = random(dutyCycleLow, dutyCycleHigh);
-    delay(_delay);
-    Serial.print(_delay);
+    Serial.print(5000 - _delay);
     Serial.print(" ms");
+    delay(5000 - _delay);
+
     return;
   }
-  int _delay = random(dutyCycleLow, dutyCycleHigh);
-  Serial.print("Failed: wait for : ");
-  Serial.print(_delay);
-  Serial.print(" ms");
-  delay(_delay);
 }
