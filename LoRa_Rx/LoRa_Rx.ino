@@ -42,10 +42,10 @@ void setup()
   //  pinMode(led,OUTPUT);
   while (!Serial)
     ;
-  Serial.println("LoRa Receiver");
+  // Serial.println("LoRa Receiver");
   if (!LoRa.begin(433E6))
   {
-    Serial.println("Starting LoRa failed!");
+    // Serial.println("Starting LoRa failed!");
     while (1)
       ;
   }
@@ -78,18 +78,18 @@ void loop()
     }
     if (rxCount == 19)
     {
-      Serial.println("Complete packet received");
+      // Serial.println("Complete packet received");
     }
     uint8_t chksum = (uint8_t)(verifyChecksum);
     if (chksum == 0xFF)
     {
-      Serial.println("Packet OK!");
+      // Serial.println("Packet OK!");
     }
     else
     {
-      Serial.println("Packet Corrupted!");
+      // Serial.println("Packet Corrupted!");
     }
-    Serial.write(rxBuffer);
+    Serial.write(rxBuffer, 19);
 
     uint8_t address = rxBuffer[0];
 
@@ -121,26 +121,26 @@ void loop()
 
     uint8_t checksum = rxBuffer[18];
 
-    Serial.print("From node : ");
-    Serial.println(address);
+    // Serial.print("From node : ");
+    // Serial.println(address);
 
-    Serial.print("Heart Rate : ");
-    Serial.println(heartRate);
+    // Serial.print("Heart Rate : ");
+    // Serial.println(heartRate);
 
-    Serial.print("Body Temperature : ");
-    Serial.println(bodyTemp);
+    // Serial.print("Body Temperature : ");
+    // Serial.println(bodyTemp);
 
-    Serial.print("Emergency : ");
-    Serial.println(emergency);
+    // Serial.print("Emergency : ");
+    // Serial.println(emergency);
 
-    Serial.print("Latitude : ");
-    Serial.println(lat);
+    // Serial.print("Latitude : ");
+    // Serial.println(lat);
 
-    Serial.print("Longitude : ");
-    Serial.println(lng);
+    // Serial.print("Longitude : ");
+    // Serial.println(lng);
 
-    Serial.print("Checksum : ");
-    Serial.println(checksum);
+    // Serial.print("Checksum : ");
+    // Serial.println(checksum);
 
     //    Serial.print("Val: ");
     //    Serial.println(val);

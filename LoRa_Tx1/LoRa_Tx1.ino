@@ -26,11 +26,11 @@ void setup()
   pinMode(pot, INPUT);
   while (!Serial)
     ;
-  Serial.println("LoRa Sender");
+  // Serial.println("LoRa Sender");
 
   if (!LoRa.begin(433E6))
   {
-    Serial.println("Starting LoRa failed!");
+    // Serial.println("Starting LoRa failed!");
     while (1)
       ;
   }
@@ -77,22 +77,22 @@ void loop()
   checksum = 0xFF - checksum;
   buffer[18] = checksum;
 
-  Serial.println("Sending packet: ");
+  // Serial.println("Sending packet: ");
   // send packet
   if (LoRa.beginPacket() == 1)
   {
     // random backoff
     int _delay = random(0, dutyDuration / 2);
-    Serial.print("Backoff for : ");
-    Serial.print(_delay);
-    Serial.println(" ms");
+    // Serial.print("Backoff for : ");
+    // Serial.print(_delay);
+    // Serial.println(" ms");
     delay(_delay);
     LoRa.write(buffer, 19);
     if (LoRa.endPacket() == 1)
     {
       //success
-      Serial.print("P1:");
-      Serial.println(potVal);
+      // Serial.print("P1:");
+      // Serial.println(potVal);
     }
     delay(dutyDuration - _delay);
 
