@@ -44,23 +44,30 @@ void loop()
 {
 
   buffer[0] = address;
+
   buffer[1] = ((byte *)&heartRate)[0];
   buffer[2] = ((byte *)&heartRate)[1];
   buffer[3] = ((byte *)&heartRate)[2];
   buffer[4] = ((byte *)&heartRate)[3];
+
   buffer[5] = ((byte *)&bodyTemp)[0];
   buffer[6] = ((byte *)&bodyTemp)[1];
   buffer[7] = ((byte *)&bodyTemp)[2];
   buffer[8] = ((byte *)&bodyTemp)[3];
+
   buffer[9] = emergency;
+
   buffer[10] = ((byte *)&lat)[0];
   buffer[11] = ((byte *)&lat)[1];
   buffer[12] = ((byte *)&lat)[2];
   buffer[13] = ((byte *)&lat)[3];
+
   buffer[14] = ((byte *)&lng)[0];
   buffer[15] = ((byte *)&lng)[1];
   buffer[16] = ((byte *)&lng)[2];
   buffer[17] = ((byte *)&lng)[3];
+
+  Serial.write(buffer, 19);
 
   checksum = 0;
   for (int i = 0; i < 18; i++)
