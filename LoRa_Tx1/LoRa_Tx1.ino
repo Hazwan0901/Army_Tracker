@@ -83,9 +83,9 @@ void loop()
   {
     // random backoff
     int _delay = random(0, dutyDuration / 2);
-    // Serial.print("Backoff for : ");
-    // Serial.print(_delay);
-    // Serial.println(" ms");
+    Serial.print("Backoff for : ");
+    Serial.print(_delay);
+    Serial.println(" ms");
     delay(_delay);
     LoRa.write(buffer, 19);
     if (LoRa.endPacket() == 1)

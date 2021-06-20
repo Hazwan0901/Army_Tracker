@@ -80,8 +80,8 @@ void loop()
     {
       // Serial.println("Packet Corrupted!");
     }
-    Serial.write(rxBuffer, 19);
-
+    //Serial.write(rxBuffer, 19);
+    Serial.println("...............");
     uint8_t address = rxBuffer[0];
 
     float heartRate;
@@ -112,36 +112,36 @@ void loop()
 
     uint8_t checksum = rxBuffer[18];
 
-    // Serial.print("From node : ");
-    // Serial.println(address);
+    Serial.print("From node : ");
+    Serial.println(address);
 
-    // Serial.print("Heart Rate : ");
-    // Serial.println(heartRate);
+    Serial.print("Heart Rate : ");
+    Serial.println(heartRate);
 
-    // Serial.print("Body Temperature : ");
-    // Serial.println(bodyTemp);
+    Serial.print("Body Temperature : ");
+    Serial.println(bodyTemp);
 
-    // Serial.print("Emergency : ");
-    // Serial.println(emergency);
+    Serial.print("Emergency : ");
+    Serial.println(emergency);
 
-    // Serial.print("Latitude : ");
-    // Serial.println(lat);
+    Serial.print("Latitude : ");
+    Serial.println(lat,6);
 
-    // Serial.print("Longitude : ");
-    // Serial.println(lng);
+    Serial.print("Longitude : ");
+    Serial.println(lng,6);
 
-    // Serial.print("Checksum : ");
-    // Serial.println(checksum);
-
-    //    Serial.print("Val: ");
-    //    Serial.println(val);
-    //    Serial.print("inChar: ");
-    //    Serial.println(inChar);
-    //    Serial.print("inString: ");
-    //    Serial.println(inString);
-    //    Serial.print("packetSize: ");
-    //    Serial.println(packetSize);
-
+    Serial.print("Checksum : ");
+    Serial.println(checksum);
+    /*
+    Serial.print("Val: ");
+    Serial.println(val);
+    Serial.print("inChar: ");
+    Serial.println(inChar);
+    Serial.print("inString: ");
+    Serial.println(inString);
+    Serial.print("packetSize: ");
+    Serial.println(packetSize);
+    */
     rssi = LoRa.packetRssi();
 
     display.clearDisplay();
