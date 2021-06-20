@@ -4,6 +4,7 @@ int pot = A1;
 
 int dutyCycleLow = 2500;
 int dutyCycleHigh = 3500;
+int dutyDuration = 10000;
 
 int counter = 1;
 
@@ -27,7 +28,7 @@ void setup()
   LoRa.setSignalBandwidth(62.5E3); // for -139dB (page - 112)
   LoRa.setCodingRate4(8);          // for -139dB (page - 112)
   LoRa.setSyncWord(SyncWord);
-  delay(random(5000));
+  delay(random(dutyDuration / 2, dutyDuration));
 }
 
 void loop()
@@ -66,14 +67,9 @@ void loop()
     {
       Serial.print("Failed: wait for : ");
     }
-    Serial.print(5000 - _delay);
+    Serial.print(dutyDuration - _delay);
     Serial.println(" ms");
-    delay(5000 - _delay);
+    delay(dutyDuration - _delay);
     return;
   }
-  int _delay = random(dutyCycleLow, dutyCycleHigh);
-  Serial.print("Failed: wait for : ");
-  Serial.print(_delay);
-  Serial.print(" ms");
-  delay(_delay);
 }
