@@ -1,3 +1,24 @@
+//====================== INTIALIZE BYLNK ========================
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+
+// You should get Auth Token in the Blynk App.
+// Go to the Project Settings (nut icon).
+char auth[] = "6tilHJC8GhmvVRF2ERIZSA3jmiYL-WG1";
+
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "pamattoya";
+char pass[] = "satusampailima";
+
+WidgetMap MapSoldier1(V2);
+
+int Choose_Soldier;
+
+BLYNK_WRITE(V3) {
+  Choose_Soldier = param.asInt();
+}
 //======================== OLED VARIABLES ===============
 #include <SPI.h>
 #include <Wire.h>
@@ -28,12 +49,14 @@ uint8_t rxBuffer[19];
 
 uint8_t POLL_NODE = 0;
 uint8_t TX_MODE = 1;
-
-long timeout = 1000000;
 //======================= Delay Without Delay ===============
 unsigned long previousMillis = 0,
-              currentMillis = 0;  
-const long interval = 5000; 
+              currentMillis = 0;
+const long interval = 5000;
+
+unsigned long previousMillis1 = 0,
+              currentMillis1 = 0;
+const long interval1 = 1000;
 
 int delay_Count = 0;
 int enable_Request = 0;
@@ -52,12 +75,14 @@ float heartRate_Node1;
 uint8_t emergency_Node1;
 float lat_Node1;
 float lng_Node1;
+int Enable_Noty_Node1 = 0;
 //======================== Data From Transmitter 2 ===============
 float bodyTemp_Node2;
 float heartRate_Node2;
 uint8_t emergency_Node2;
 float lat_Node2;
 float lng_Node2;
+int Enable_Noty_Node2 = 0;
 //======================== VOID SETUP ===============
 void setup()
 {
@@ -77,13 +102,46 @@ void setup()
   LoRa.setSignalBandwidth(62.5E3); // for -139dB (page - 112)
   LoRa.setCodingRate4(8);          // for -139dB (page - 112)
   LoRa.setSyncWord(SyncWord);      // ranges from 0-0xFF, default 0x12, see API docs
+
+  Serial.print("SSID:");
+  Serial.println(ssid);
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(2, 1);
+  display.print("Connecting to");
+  display.setTextSize(1);
+  display.setCursor(2, 15);
+  display.print(ssid);
+  display.display();
+
+  Blynk.begin(auth, ssid, pass);
+
+  Serial.print("IP:");
+  Serial.println(WiFi.localIP().toString().c_str());
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(2, 1);
+  display.print("Wifi Connected");
+  display.setTextSize(1);
+  display.setCursor(2, 15);
+  display.print("with IP:");
+  display.print(WiFi.localIP());
+  display.display();
 }
 //======================== VOID LOOP ===============
 void loop()
 {
+  Blynk.run();
+  //Request Data from transmitter
   Request_Data();
+  //Extract data after received data from transmitter
   Extract_Data();
-
+  //Send Data to Blynk App
+  Send_Data();
 }
 
 //======================== Request Data From Transmitter ===============
@@ -94,8 +152,25 @@ void Request_Data()
 
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
+
+    rssi = LoRa.packetRssi();
+
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 0);
+    display.print("Request Data");
+    display.setCursor(0, 8);
+    display.print("From node ");
+    display.print(TX_MODE);
+    display.setCursor(0, 16);
+    display.print("RSSI: ");
+    display.println(rssi);
+    display.display();
+
     if (TX_MODE == 1 )
     {
+      
       if (LoRa.beginPacket() == 1)
       {
         uint8_t buff[1] = {1};
@@ -106,7 +181,7 @@ void Request_Data()
         }
       }
       TX_MODE = 0;
-    }else{
+    } else {
       if (LoRa.beginPacket() == 1)
       {
         uint8_t buff[1] = {2};
@@ -120,9 +195,9 @@ void Request_Data()
     }
   }
   /*
-  if (TX_MODE == 1 )
-  {
-    
+    if (TX_MODE == 1 )
+    {
+
     if (LoRa.beginPacket() == 1)
     {
       uint8_t buff[1] = {POLL_NODE + 1};
@@ -136,18 +211,18 @@ void Request_Data()
       TX_MODE = 0;
       return;
     }
-  }
+    }
 
-  timeout -= 1;
-  if (timeout == 0)
-  {
+    timeout -= 1;
+    if (timeout == 0)
+    {
     timeout = 1000000;
     TX_MODE = 1;
-  }
-*/
+    }
+  */
 }
 //======================== Extract Data From Transmitter ===============
-void Extract_Data(){
+void Extract_Data() {
   // try to parse packet
   int packetSize = LoRa.parsePacket();
   if (packetSize)
@@ -168,20 +243,20 @@ void Extract_Data(){
       rxBuffer[rxCount++] = rxByte;
     }
     /*
-    if (rxCount == 19)
-    {
+      if (rxCount == 19)
+      {
       Serial.println("Complete packet received");
-    }
-    uint8_t chksum = (uint8_t)(verifyChecksum);
-    /*
-    if (chksum == 0xFF)
-    {
+      }
+      uint8_t chksum = (uint8_t)(verifyChecksum);
+      /*
+      if (chksum == 0xFF)
+      {
       Serial.println("Packet OK!");
-    }
-    else
-    {
+      }
+      else
+      {
       Serial.println("Packet Corrupted!");
-    }
+      }
     */
     //Serial.write(rxBuffer, 19);
     Serial.println("...............");
@@ -204,7 +279,7 @@ void Extract_Data(){
     ((byte *)&lat)[2] = rxBuffer[12];
     ((byte *)&lat)[3] = rxBuffer[13];
 
-    
+
     ((byte *)&lng)[0] = rxBuffer[14];
     ((byte *)&lng)[1] = rxBuffer[15];
     ((byte *)&lng)[2] = rxBuffer[16];
@@ -213,25 +288,12 @@ void Extract_Data(){
     checksum = rxBuffer[18];
 
     Save_Data();
-    
-    rssi = LoRa.packetRssi();
 
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
-    display.setCursor(0, 0);
-    display.print("Received Data");
-    display.setCursor(0, 8);
-    display.print("From node ");
-    display.print(address);
-    display.setCursor(0, 16);
-    display.print("RSSI: ");
-    display.println(rssi);
-    display.display();
+
   }
 }
 //======================== Save Data From Transmitter ===============
-void Save_Data(){
+void Save_Data() {
   /*
     Serial.println("==================== Data ================");
     Serial.print("From node : ");
@@ -256,8 +318,8 @@ void Save_Data(){
     Serial.println(checksum);
     Serial.println("==================== END ================");
   */
-    switch (address)
-    {
+  switch (address)
+  {
     case 1:
       heartRate_Node1 = heartRate;
       bodyTemp_Node1 = bodyTemp;
@@ -266,7 +328,7 @@ void Save_Data(){
       lng_Node1 = lng;
       Display_data_Node1();
       break;
-    
+
     case 2:
       heartRate_Node2 = heartRate;
       bodyTemp_Node2 = bodyTemp;
@@ -275,48 +337,101 @@ void Save_Data(){
       lng_Node2 = lng;
       Display_data_Node2();
       break;
-    }
+  }
 
 }
 //======================== Display Data Node 1 ===============
-void Display_data_Node1(){
-    Serial.println("==================== Data ================");
-    Serial.println("Data Node 1");
+void Display_data_Node1() {
+  Serial.println("==================== Data ================");
+  Serial.println("Data Node 1");
 
-    Serial.print("Heart Rate : ");
-    Serial.println(heartRate_Node1);
+  Serial.print("Heart Rate : ");
+  Serial.println(heartRate_Node1);
 
-    Serial.print("Body Temperature : ");
-    Serial.println(bodyTemp_Node1);
+  Serial.print("Body Temperature : ");
+  Serial.println(bodyTemp_Node1);
 
-    Serial.print("Emergency : ");
-    Serial.println(emergency_Node1);
+  Serial.print("Emergency : ");
+  Serial.println(emergency_Node1);
 
-    Serial.print("Latitude : ");
-    Serial.println(lat_Node1, 6);
+  Serial.print("Latitude : ");
+  Serial.println(lat_Node1, 6);
 
-    Serial.print("Longitude : ");
-    Serial.println(lng_Node1, 6);
-    Serial.println("==================== END ================");
+  Serial.print("Longitude : ");
+  Serial.println(lng_Node1, 6);
+  Serial.println("==================== END ================");
+  OLED_Display();
 }
 //======================== Display Data Node 2 ===============
-void Display_data_Node2(){
-    Serial.println("==================== Data ================");
-    Serial.println("Data Node 2");
+void Display_data_Node2() {
+  Serial.println("==================== Data ================");
+  Serial.println("Data Node 2");
 
-    Serial.print("Heart Rate : ");
-    Serial.println(heartRate_Node2);
+  Serial.print("Heart Rate : ");
+  Serial.println(heartRate_Node2);
 
-    Serial.print("Body Temperature : ");
-    Serial.println(bodyTemp_Node2);
+  Serial.print("Body Temperature : ");
+  Serial.println(bodyTemp_Node2);
 
-    Serial.print("Emergency : ");
-    Serial.println(emergency_Node2);
+  Serial.print("Emergency : ");
+  Serial.println(emergency_Node2);
 
-    Serial.print("Latitude : ");
-    Serial.println(lat_Node2, 6);
+  Serial.print("Latitude : ");
+  Serial.println(lat_Node2, 6);
 
-    Serial.print("Longitude : ");
-    Serial.println(lng_Node2, 6);
-    Serial.println("==================== END ================");
+  Serial.print("Longitude : ");
+  Serial.println(lng_Node2, 6);
+  Serial.println("==================== END ================");
+  OLED_Display();
+}
+//======================== Send data to blynk APP ===============
+void Send_Data()
+{
+  currentMillis1 = millis();
+
+  if (currentMillis1 - previousMillis1 >= interval1) {
+    previousMillis1 = currentMillis1;
+
+    Blynk.virtualWrite(V0, bodyTemp_Node1);
+    Blynk.virtualWrite(V1, heartRate_Node1);
+
+    Blynk.virtualWrite(V4, bodyTemp_Node2);
+    Blynk.virtualWrite(V3, heartRate_Node2);
+
+    MapSoldier1.location(1, lat_Node1, lng_Node1, "Soldier 1");
+    MapSoldier1.location(2, lat_Node2, lng_Node2, "Soldier 2");
+  }
+
+  if (Enable_Noty_Node1 == 0 && emergency_Node1 == 1)
+  {
+    //Blynk.notify("Emergency! Soldier 1 need Help");
+    Enable_Noty_Node1 = 1;
+  } else {
+    Enable_Noty_Node1 = 0;
+  }
+
+  if (Enable_Noty_Node2 == 0 && emergency_Node2 == 1)
+  {
+    Blynk.notify("Emergency! Soldier 2 need Help");
+    Enable_Noty_Node2 = 1;
+  } else {
+    Enable_Noty_Node2 = 0;
+  }
+}
+
+void OLED_Display(){
+  rssi = LoRa.packetRssi();
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.print("Received Data");
+  display.setCursor(0, 8);
+  display.print("From node ");
+  display.print(address);
+  display.setCursor(0, 16);
+  display.print("RSSI: ");
+  display.println(rssi);
+  display.display();
 }
