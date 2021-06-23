@@ -153,21 +153,6 @@ void Request_Data()
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
 
-    rssi = LoRa.packetRssi();
-
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
-    display.setCursor(0, 0);
-    display.print("Request Data");
-    display.setCursor(0, 8);
-    display.print("From node ");
-    display.print(TX_MODE);
-    display.setCursor(0, 16);
-    display.print("RSSI: ");
-    display.println(rssi);
-    display.display();
-
     if (TX_MODE == 1 )
     {
       
@@ -338,7 +323,20 @@ void Save_Data() {
       Display_data_Node2();
       break;
   }
+  rssi = LoRa.packetRssi();
 
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.print("Received Data");
+  display.setCursor(0, 8);
+  display.print("From node ");
+  display.print(address);
+  display.setCursor(0, 16);
+  display.print("RSSI: ");
+  display.println(rssi);
+  display.display();
 }
 //======================== Display Data Node 1 ===============
 void Display_data_Node1() {
@@ -360,7 +358,6 @@ void Display_data_Node1() {
   Serial.print("Longitude : ");
   Serial.println(lng_Node1, 6);
   Serial.println("==================== END ================");
-  OLED_Display();
 }
 //======================== Display Data Node 2 ===============
 void Display_data_Node2() {
@@ -382,7 +379,7 @@ void Display_data_Node2() {
   Serial.print("Longitude : ");
   Serial.println(lng_Node2, 6);
   Serial.println("==================== END ================");
-  OLED_Display();
+
 }
 //======================== Send data to blynk APP ===============
 void Send_Data()
@@ -417,21 +414,4 @@ void Send_Data()
   } else {
     Enable_Noty_Node2 = 0;
   }
-}
-
-void OLED_Display(){
-  rssi = LoRa.packetRssi();
-
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.print("Received Data");
-  display.setCursor(0, 8);
-  display.print("From node ");
-  display.print(address);
-  display.setCursor(0, 16);
-  display.print("RSSI: ");
-  display.println(rssi);
-  display.display();
 }
